@@ -19,13 +19,15 @@ def fetch_housing_data(housing_url=HOUSING_URL, housing_path=HOUSING_PATH):
     housing_tgz.extractall(path=housing_path)
     housing_tgz.close()
 
+fetch_housing_data()
+
 import pandas as pd
 
 def load_housing_data(housing_path=HOUSING_PATH):
     csv_path = os.path.join(housing_path, "housing.csv")
     return pd.read_csv(csv_path)
 
-housing = load_housing_data
+housing = load_housing_data()
 
 from sklearn.model_selection import train_test_split
 
@@ -63,7 +65,12 @@ housing = strat_train_set.copy()
 housing.plot(kind="scatter", x="longitude", y="latitude")
 housing.plot(kind="scatter", x="longitude", y="latitude", alpha=0.1)
 
-corr_matrix = housing.corr()
+###############################################################################################
+without_ocean_proximity = housing.drop('ocean_proximity', axis=1)
+corr_matrix = without_ocean_proximity.corr()
+###############################################################################################
+
+
 corr_matrix["median_house_value"].sort_values(ascending=False)
 housing["rooms_per_household"] = housing["total_rooms"]/housing["households"]
 housing["bedrooms_per_room"] = housing["total_bedrooms"]/housing["total_rooms"]
@@ -76,6 +83,7 @@ from sklearn.impute import SimpleImputer
 imputer = SimpleImputer(strategy="median")
 
 housing_num = housing.drop('ocean_proximity', axis=1)
+print(housing_num.columns)
 
 imputer.fit(housing_num)
 X = imputer.transform(housing_num)
@@ -179,3 +187,5 @@ X_test_prepared = X_test_prepared.join(pd.get_dummies(X_test_cat, drop_first=Tru
 final_predictions = final_model.predict(X_test_prepared)
 final_mse = mean_squared_error(y_test, final_predictions)
 final_rmse = np.sqrt(final_mse)
+
+print(f"RMSE is {final_rmse}")
