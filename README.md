@@ -19,3 +19,9 @@ The following techniques have been used:
 conda create --name < env_name > --file env.yaml
 conda activate < env_name >
 python < scriptname.py >
+
+## To perform formatting
+
+black < scriptname.py >
+isort < scriptname.py >
+flake8 < scriptname.py >
