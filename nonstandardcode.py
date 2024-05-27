@@ -50,7 +50,6 @@ housing["income_cat"] = pd.cut(
     labels=[1, 2, 3, 4, 5],
 )
 
-
 split = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
 for train_index, test_index in split.split(housing, housing["income_cat"]):
     strat_train_set = housing.loc[train_index]
@@ -84,10 +83,8 @@ housing = strat_train_set.copy()
 housing.plot(kind="scatter", x="longitude", y="latitude")
 housing.plot(kind="scatter", x="longitude", y="latitude", alpha=0.1)
 
-###############################################################################################
-without_ocean_proximity = housing.drop("ocean_proximity", axis=1)
+without_ocean_proximity = housing.drop('ocean_proximity', axis=1)
 corr_matrix = without_ocean_proximity.corr()
-###############################################################################################
 
 
 corr_matrix["median_house_value"].sort_values(ascending=False)
@@ -146,8 +143,8 @@ tree_rmse
 
 
 param_distribs = {
-    "n_estimators": randint(low=1, high=200),
-    "max_features": randint(low=1, high=8),
+    'n_estimators': randint(low=1, high=200),
+    'max_features': randint(low=1, high=8),
 }
 
 forest_reg = RandomForestRegressor(random_state=42)
@@ -156,7 +153,7 @@ rnd_search = RandomizedSearchCV(
     param_distributions=param_distribs,
     n_iter=10,
     cv=5,
-    scoring="neg_mean_squared_error",
+    scoring='neg_mean_squared_error',
     random_state=42,
 )
 rnd_search.fit(housing_prepared, housing_labels)
@@ -169,7 +166,7 @@ param_grid = [
     # try 12 (3×4) combinations of hyperparameters
     {"n_estimators": [3, 10, 30], "max_features": [2, 4, 6, 8]},
     # then try 6 (2×3) combinations with bootstrap set as False
-    {"bootstrap": [False], "n_estimators": [3, 10], "max_features": [2, 3, 4]},
+    {'bootstrap': [False], 'n_estimators': [3, 10], 'max_features': [2, 3, 4]},
 ]
 
 forest_reg = RandomForestRegressor(random_state=42)
@@ -178,7 +175,7 @@ grid_search = GridSearchCV(
     forest_reg,
     param_grid,
     cv=5,
-    scoring="neg_mean_squared_error",
+    scoring='neg_mean_squared_error',
     return_train_score=True,
 )
 grid_search.fit(housing_prepared, housing_labels)
