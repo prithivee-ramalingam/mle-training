@@ -100,7 +100,7 @@ housing_labels = strat_train_set["median_house_value"].copy()
 
 imputer = SimpleImputer(strategy="median")
 
-housing_num = housing.drop('ocean_proximity', axis=1)
+housing_num = housing.drop("ocean_proximity", axis=1)
 print(housing_num.columns)
 
 imputer.fit(housing_num)
@@ -115,7 +115,7 @@ housing_tr["population_per_household"] = (
     housing_tr["population"] / housing_tr["households"]
 )
 
-housing_cat = housing[['ocean_proximity']]
+housing_cat = housing[["ocean_proximity"]]
 housing_prepared = housing_tr.join(pd.get_dummies(housing_cat, drop_first=True))
 
 
@@ -164,7 +164,7 @@ for mean_score, params in zip(cvres["mean_test_score"], cvres["params"]):
 
 param_grid = [
     # try 12 (3×4) combinations of hyperparameters
-    {'n_estimators': [3, 10, 30], 'max_features': [2, 4, 6, 8]},
+    {"n_estimators": [3, 10, 30], "max_features": [2, 4, 6, 8]},
     # then try 6 (2×3) combinations with bootstrap set as False
     {'bootstrap': [False], 'n_estimators': [3, 10], 'max_features': [2, 3, 4]},
 ]
@@ -194,7 +194,7 @@ final_model = grid_search.best_estimator_
 X_test = strat_test_set.drop("median_house_value", axis=1)
 y_test = strat_test_set["median_house_value"].copy()
 
-X_test_num = X_test.drop('ocean_proximity', axis=1)
+X_test_num = X_test.drop("ocean_proximity", axis=1)
 X_test_prepared = imputer.transform(X_test_num)
 X_test_prepared = pd.DataFrame(
     X_test_prepared, columns=X_test_num.columns, index=X_test.index
@@ -209,7 +209,7 @@ X_test_prepared["population_per_household"] = (
     X_test_prepared["population"] / X_test_prepared["households"]
 )
 
-X_test_cat = X_test[['ocean_proximity']]
+X_test_cat = X_test[["ocean_proximity"]]
 X_test_prepared = X_test_prepared.join(pd.get_dummies(X_test_cat, drop_first=True))
 
 
