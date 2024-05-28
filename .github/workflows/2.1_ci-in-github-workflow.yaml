@@ -20,17 +20,8 @@ jobs:
         uses: conda-incubator/setup-miniconda@v3
         with:
           auto-update-conda: true
-          python-version: 3.12
-
-      - name: Create conda environment from env.yaml
-        run: conda env create -f env.yaml
-        shell: bash -l {0}
-
-      - name: Activate conda environment
-        run: |
-          conda init
-          conda activate mle-dev
-        shell: bash -l {0}
+          activate-environment: mle-dev
+          environment-file: env.yaml
 
       - name: List installed libraries
         run: conda list
