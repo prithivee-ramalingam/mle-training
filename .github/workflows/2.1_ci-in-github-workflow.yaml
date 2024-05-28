@@ -22,9 +22,11 @@ jobs:
           auto-update-conda: true
           python-version: 3.12
 
-      - name: Conda list
-        shell: pwsh
-        run: conda list
+      - name: Initialize conda
+        run: |
+          conda init bash
+          source ~/.bashrc
+        shell: bash -l {0}
 
       - name: Create conda environment from env.yaml
         run: conda env create -f env.yaml
