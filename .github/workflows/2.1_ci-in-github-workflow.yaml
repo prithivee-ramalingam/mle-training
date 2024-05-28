@@ -32,8 +32,13 @@ jobs:
           conda activate mle-dev
         shell: bash -l {0}
 
+      - name: List installed libraries
+        run: conda list
+        shell: bash -l {0}
+
       - name: Run flake8
-        run: flake8 nonstandardcode.py
+        run: |
+          flake8 nonstandardcode.py
         shell: bash -l {0}
 
       - name: Run logic
