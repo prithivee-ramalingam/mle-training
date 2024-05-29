@@ -1,0 +1,37 @@
+name: 2.1 CI in Github Workflow
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - enh/issue#7/ci-in-github
+
+jobs:
+  ci-job:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Miniconda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          activate-environment: mle-dev
+          environment-file: env.yaml
+
+      - name: List installed libraries
+        run: conda list
+        shell: bash -l {0}
+
+      - name: Run flake8
+        run: |
+          flake8 nonstandardcode.py
+        shell: bash -l {0}
+
+      - name: Run logic
+        run: python nonstandardcode.py
+        shell: bash -l {0}
