@@ -57,6 +57,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-and-upload-artifact-job
     steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
