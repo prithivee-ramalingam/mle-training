@@ -46,11 +46,8 @@ jobs:
       - name: Install the custom package
         run: pip install dist/house_price_prediction-0.1.0-py3-none-any.whl
 
-      - name: Install pytest
-        run: conda install -n mle-dev pytest -c conda-forge --yes
-
-
       - name: Running pytest for testing
         run : python -m pytest
         shell: bash -l {0}
+
 
