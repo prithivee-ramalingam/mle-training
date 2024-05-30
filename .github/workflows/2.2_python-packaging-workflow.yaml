@@ -26,7 +26,7 @@ jobs:
 
       - name: Run flake8
         run: |
-          flake8 nonstandardcode.py
+          flake8 src/house_price_prediction/nonstandardcode.py
         shell: bash -l {0}
 
       - name: Update apt-get packages
