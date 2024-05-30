@@ -52,4 +52,5 @@ jobs:
 
       - name: Running pytest for testing
         run : python -m pytest
+        shell: bash -l {0}
 
