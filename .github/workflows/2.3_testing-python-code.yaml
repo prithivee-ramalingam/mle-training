@@ -50,5 +50,5 @@ jobs:
         run: conda install pytest
 
       - name: Running pytest for testing
-        run : pytest
+        run : python -m pytest
 
