@@ -47,7 +47,7 @@ jobs:
         run: pip install dist/house_price_prediction-0.1.0-py3-none-any.whl
 
       - name: Running pytest for testing
-        run : python -m pytest
+        run : pytest
         shell: bash -l {0}
 
 
