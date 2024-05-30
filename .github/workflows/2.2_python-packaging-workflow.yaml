@@ -77,7 +77,7 @@ jobs:
           environment-file: env.yaml
 
       - name: Install the package
-        run: pip install dist/house_price_prediction*.whl
+        run: pip install dist/house_price_prediction-0.1.0-py3-none-any.whl
 
       - name: Run package
         run: python running_the_package.py
