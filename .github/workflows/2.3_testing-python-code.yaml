@@ -8,6 +8,9 @@ on:
 jobs:
   test-package-job:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -el {0}
 
     steps:
       - name: Checkout repository
@@ -48,6 +51,4 @@ jobs:
 
       - name: Running pytest for testing
         run : pytest
-        shell: bash -l {0}
-
 
