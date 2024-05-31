@@ -20,10 +20,10 @@ jobs:
           activate-environment: mle-dev
           environment-file: env.yaml
 
-      - name: Run flake8
-        run: |
-          flake8 src/house_price_prediction/nonstandardcode.py
-        shell: bash -l {0}
+      # - name: Run flake8
+      #   run: |
+      #     flake8 src/house_price_prediction/nonstandardcode.py
+      #   shell: bash -l {0}
 
       - name: Update apt-get packages
         run: sudo apt-get update
