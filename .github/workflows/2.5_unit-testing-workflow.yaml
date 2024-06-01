@@ -1,0 +1,42 @@
+name: 2.5 Unit Testing
+
+on:
+  push:
+    branches:
+      - test/issue#15/unit-testing
+
+jobs:
+  unit-test-job:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -el {0}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Miniconda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          activate-environment: mle-dev
+          environment-file: env.yaml
+
+      - name: Update apt-get packages
+        run: sudo apt-get update
+
+      - name: Install tree CLI tool
+        run: sudo apt-get install -y tree
+
+      - name: Install package in development mode
+        run: |
+          conda install pip
+          pip install -e .
+
+      - name: Display directory tree after building
+        run: tree
+
+      - name: Running pytest for testing
+        run : pytest
+
