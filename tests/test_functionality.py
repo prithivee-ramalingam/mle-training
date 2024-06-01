@@ -5,6 +5,7 @@ from house_price_prediction import data_ingestion, scoring, training
 
 
 def test_data_ingestion():
+    data_ingestion.fetch_housing_data()
     housing = data_ingestion.load_housing_data()
     assert isinstance(housing, pd.DataFrame)
 
