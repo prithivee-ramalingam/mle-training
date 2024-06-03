@@ -1,11 +1,21 @@
 import argparse
 import csv
+import logging
 import os
 import pickle
 
+import config_logging
 import pandas as pd
 
 from house_price_prediction.scoring_package import scoring
+
+logger = logging.getLogger(__name__)
+
+
+def initialize_logger(log_level, log_path, console_log):
+    config_logging.setup_logging(
+        log_level=log_level, log_path=log_path, console_log=console_log
+    )
 
 
 def calculate_model_score(input_data_path, model_path, output_file_path):
@@ -29,7 +39,7 @@ def calculate_model_score(input_data_path, model_path, output_file_path):
                 # Write the RMSE and MAE values
                 writer.writerow(["RMSE", final_rmse])
                 writer.writerow(["MAE", final_mse])
-                print("Model Scores saved Successfully")
+                logger.info("Model Scores saved Successfully")
 
 
 def main():
@@ -37,7 +47,13 @@ def main():
     parser.add_argument("input_data_path", help="Input Dataset Folder Path")
     parser.add_argument("model_path", help="Prediction Model FolderPath")
     parser.add_argument("output_file_path", help="Model Output file")
+    parser.add_argument("log_level", help="Log level")
+    parser.add_argument("log_path", help="Where to log")
+    parser.add_argument(
+        "console_log", help="Whether or not to write logs to the console"
+    )
     args = parser.parse_args()
+    initialize_logger(args.log_level, args.log_path, args.console_log)
     calculate_model_score(args.input_data_path, args.model_path, args.output_file_path)
 
 

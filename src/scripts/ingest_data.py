@@ -1,7 +1,9 @@
 import argparse
+import logging
 import os
 import tarfile
 
+import config_logging
 import numpy as np
 import pandas as pd
 from six.moves import urllib
@@ -11,6 +13,14 @@ from house_price_prediction.training_package import training
 
 DOWNLOAD_ROOT = "https://raw.githubusercontent.com/ageron/handson-ml/master/"
 HOUSING_URL = DOWNLOAD_ROOT + "datasets/housing/housing.tgz"
+
+logger = logging.getLogger(__name__)
+
+
+def initialize_logger(log_level, log_path, console_log):
+    config_logging.setup_logging(
+        log_level=log_level, log_path=log_path, console_log=console_log
+    )
 
 
 def ingest_input_data(output_folder):
@@ -27,7 +37,7 @@ def ingest_input_data(output_folder):
         bins=[0.0, 1.5, 3.0, 4.5, 6.0, np.inf],
         labels=[1, 2, 3, 4, 5],
     )
-    print("Data Loaded Successfully")
+    logger.info("Data Loaded Successfully")
     # Train and Test split the data
     train_set, test_set, train, test = training.stratifiedShuffleSplit(housing)
     # Pre process the data
@@ -55,13 +65,19 @@ def ingest_input_data(output_folder):
     y_train = y_train.to_csv(y_train_csv_path, index=False)
     X_test = X_test.to_csv(x_test_csv_path, index=False)
     y_test = y_test.to_csv(y_test_csv_path, index=False)
-    print("Train Test dataset split Successfully and saved")
+    logger.info("Train Test dataset split Successfully and saved")
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("output_folder", help="Output Folder path")
+    parser.add_argument("log_level", help="Log level")
+    parser.add_argument("log_path", help="Where to log")
+    parser.add_argument(
+        "console_log", help="Whether or not to write logs to the console"
+    )
     args = parser.parse_args()
+    initialize_logger(args.log_level, args.log_path, args.console_log)
     ingest_input_data(args.output_folder)
 
 
