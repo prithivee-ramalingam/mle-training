@@ -1,7 +1,7 @@
 name: 2.6 Workflow scripts
 
 on:
-  pull_request:
+  push:
     branches:
       - enh/issue#17/workflow-scripts
 
