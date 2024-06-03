@@ -1,7 +1,9 @@
 import pandas as pd
 from sklearn.metrics import mean_squared_error
 
-from house_price_prediction import data_ingestion, scoring, training
+from house_price_prediction.data_ingestion_package import data_ingestion
+from house_price_prediction.scoring_package import scoring
+from house_price_prediction.training_package import training
 
 
 def test_data_ingestion():
