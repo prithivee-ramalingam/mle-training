@@ -1,6 +1,6 @@
-from data_ingestion import data_ingestion_main_func
-from scoring import scoring_main_function
-from training import training_main_func
+from data_ingestion_package.data_ingestion import data_ingestion_main_func
+from scoring_package.scoring import scoring_main_function
+from training_package.training import training_main_func
 
 
 def main_function():
