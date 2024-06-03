@@ -6,7 +6,8 @@ import numpy as np
 import pandas as pd
 from six.moves import urllib
 
-from house_price_prediction import data_ingestion, training
+from house_price_prediction.data_ingestion_package import data_ingestion
+from house_price_prediction.training_package import training
 
 DOWNLOAD_ROOT = "https://raw.githubusercontent.com/ageron/handson-ml/master/"
 HOUSING_URL = DOWNLOAD_ROOT + "datasets/housing/housing.tgz"
