@@ -1,0 +1,115 @@
+name: 2.6 Workflow scripts
+
+on:
+  push:
+    branches:
+      - enh/issue#17/workflow-scripts
+
+jobs:
+  unit_test_job:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -el {0}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Miniconda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          activate-environment: mle-dev
+          environment-file: env.yaml
+
+      - name: Update apt-get packages
+        run: sudo apt-get update
+
+      - name: Install tree CLI tool
+        run: sudo apt-get install -y tree
+
+      - name: Display directory tree before building
+        run: tree
+
+      - name: Install the Python package in dev mode
+        run: |
+          conda install pip
+          pip install -e .
+
+      - name: Test using Pytest
+        run: pytest
+
+  build_job:
+    runs-on: ubuntu-latest
+    needs: unit_test_job
+    defaults:
+      run:
+        shell: bash -el {0}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Miniconda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          activate-environment: mle-dev
+          environment-file: env.yaml
+
+      - name: Upgrade the build package
+        run: python -m pip install --upgrade build
+
+      - name: Build the package
+        run: python -m build
+
+      - name: Install Package
+        run: |
+          pip install dist/*.whl
+
+      - name: Test using Pytest
+        run: pytest
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: dist
+
+  deploy_job:
+    needs:  build_job
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -el {0}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Miniconda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          activate-environment: mle-dev
+          environment-file: env.yaml
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: dist
+
+      - name: Install Package
+        run: |
+          pip install dist/*.whl
+
+      - name: Run scripts
+        run: |
+          python src/scripts/ingest_data.py -h
+          python src/scripts/ingest_data.py data
+          python src/scripts/train.py -h
+          python src/scripts/train.py data/processed artifacts/models
+          python src/scripts/score.py -h
+          python src/scripts/score.py data/processed artifacts/models artifacts/scores
+
+      - name: Display directory tree after building
+        run: tree

@@ -39,12 +39,13 @@ def get_prediction(final_model, X_test_prepared, y_test):
     final_predictions = final_model.predict(X_test_prepared)
     final_mse = mean_squared_error(y_test, final_predictions)
     final_rmse = np.sqrt(final_mse)
-    print(f"RMSE is {final_rmse}")
-    return final_predictions
+    return final_predictions, final_mse, final_rmse
 
 
 def scoring_main_function(strat_test_set, imputer, final_model):
     X_test, y_test = get_x_and_y_strat_test_data(strat_test_set)
     X_test_prepared = perform_necessary_processing(X_test, imputer)
-    final_predictions = get_prediction(final_model, X_test_prepared, y_test)
+    final_predictions, final_mse, final_rmse = get_prediction(
+        final_model, X_test_prepared, y_test
+    )
     print(final_predictions)

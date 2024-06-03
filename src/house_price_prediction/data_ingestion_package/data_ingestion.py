@@ -3,6 +3,7 @@ import tarfile
 
 import pandas as pd
 from six.moves import urllib
+from sklearn.impute import SimpleImputer
 
 DOWNLOAD_ROOT = "https://raw.githubusercontent.com/ageron/handson-ml/master/"
 HOUSING_PATH = os.path.join("datasets", "housing")
@@ -21,6 +22,19 @@ def fetch_housing_data(housing_url=HOUSING_URL, housing_path=HOUSING_PATH):
 def load_housing_data(housing_path=HOUSING_PATH):
     csv_path = os.path.join(housing_path, "housing.csv")
     return pd.read_csv(csv_path)
+
+
+def impute_data(X_train):
+    housing = X_train.drop("median_house_value", axis=1)
+    y = X_train["median_house_value"].copy()
+
+    imputer = SimpleImputer(strategy="median")
+    X_num = housing.drop("ocean_proximity", axis=1)
+    imputer.fit(X_num)
+    X = imputer.transform(X_num)
+
+    X_prepared = pd.DataFrame(X, columns=X_num.columns, index=housing.index)
+    return housing, y, X_prepared
 
 
 def data_ingestion_main_func():
