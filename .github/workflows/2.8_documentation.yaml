@@ -1,0 +1,51 @@
+name: 2.8 Documentation with sphinx
+
+on:
+  push:
+    branches:
+      - enh/issue#21/documentation
+
+jobs:
+  documentation-job:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -el {0}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Miniconda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          activate-environment: mle-dev
+          environment-file: env.yaml
+
+      - name: Update apt-get packages
+        run: sudo apt-get update
+
+      - name: Install tree CLI tool
+        run: sudo apt-get install -y tree
+
+      - name: Display directory tree before building docs
+        run: tree
+
+      - name: Build docs with sphinx
+        run: |
+          pip install sphinx
+          cd docs
+          sphinx-apidoc -o docs ../src/house_price_prediction
+          make html
+          cd ..
+
+      - name: Display directory tree after building
+        run: tree
+
+      - name: Upload the built docs html using upload action.
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs_html_artifacts
+          path: docs/build/html/
+
