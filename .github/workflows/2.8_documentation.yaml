@@ -37,7 +37,7 @@ jobs:
           pip install sphinx
           mkdir docs
           cd docs
-          sphinx-quickstart
+          sphinx-quickstart -q -p "house_price_prediction" -a "prithivee" --sep -v 0.2.0 --ext-autodoc --ext-viewcode --ext-napoleon --makefile --no-batchfile --language en
           cp ../doc_files/conf.py source/conf.py
           sphinx-apidoc -o source/ ../src/house_price_prediction
           cp ../doc_files/index.rst source/index.rst
