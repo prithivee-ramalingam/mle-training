@@ -35,8 +35,12 @@ jobs:
       - name: Build docs with sphinx
         run: |
           pip install sphinx
+          mkdir docs
           cd docs
-          sphinx-apidoc -o docs ../src/house_price_prediction
+          sphinx-quickstart
+          cp ../doc_files/conf.py source/conf.py
+          sphinx-apidoc -o source/ ../src/house_price_prediction
+          cp ../doc_files/index.rst source/index.rst
           make html
           cd ..
 
