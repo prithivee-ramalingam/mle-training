@@ -19,6 +19,25 @@ def income_cat_proportions(data):
 
 
 def stratifiedShuffleSplit(housing):
+    """
+    Performed stratified split on housing dataframe
+
+    Parameters
+    ----------
+    housing : pandas.DataFrame
+        Raw Housing Dataframe
+
+    Returns
+    -------
+    train_set : pandas.DataFrame
+        train set after undergoing train test split
+    test_set : pandas.DataFrame
+        test set after undergoing split
+    strat_train_set : pandas.DataFrame
+        stratified train set after undergoing split
+    strat_test_set : pandas.DataFrame
+        stratified test set after undergoing split
+    """
     train_set, test_set = train_test_split(housing, test_size=0.2, random_state=42)
 
     split = StratifiedShuffleSplit(n_splits=1, test_size=0.2, random_state=42)

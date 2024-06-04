@@ -4,12 +4,40 @@ from sklearn.metrics import mean_squared_error
 
 
 def get_x_and_y_strat_test_data(strat_test_set):
+    """
+    Gets X and Y from stratified data
+
+    Parameters
+    ----------
+    strat_test_set : pandas.DataFrame
+        Dataframe after undergoing stratification
+
+    Returns
+    -------
+    X_test : pandas.DataFrame
+        The independent part of the stratified data test
+    y_test : pandas.DataFrame
+        The dependent part of the stratified data test
+    """
     X_test = strat_test_set.drop("median_house_value", axis=1)
     y_test = strat_test_set["median_house_value"].copy()
     return X_test, y_test
 
 
 def add_additional_variables_to_X_test(X_test_prepared):
+    """
+    Creates and adds new feature to the dataframe
+
+    Parameters
+    ----------
+    X_test_prepared : pandas.DataFrame
+        Dataframe after basic processing
+
+    Returns
+    -------
+    pandas.DataFrame
+        Dataframe after adding 3 new features
+    """
     X_test_prepared["rooms_per_household"] = (
         X_test_prepared["total_rooms"] / X_test_prepared["households"]
     )
