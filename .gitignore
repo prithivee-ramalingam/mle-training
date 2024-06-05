@@ -3,3 +3,5 @@
 /datasets
 /.vscode
 __pycache__/
+docs/build
+docs/datasets

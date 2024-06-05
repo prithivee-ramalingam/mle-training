@@ -11,6 +11,21 @@ HOUSING_URL = DOWNLOAD_ROOT + "datasets/housing/housing.tgz"
 
 
 def fetch_housing_data(housing_url=HOUSING_URL, housing_path=HOUSING_PATH):
+    """
+    Download data and extract it
+
+    Parameters
+    ----------
+    housing_url : str
+        The url where the data has to be donwloaded
+
+    housing_path : str
+        The path to store data
+
+    Returns
+    -------
+    None
+    """
     os.makedirs(housing_path, exist_ok=True)
     tgz_path = os.path.join(housing_path, "housing.tgz")
     urllib.request.urlretrieve(housing_url, tgz_path)
@@ -20,6 +35,19 @@ def fetch_housing_data(housing_url=HOUSING_URL, housing_path=HOUSING_PATH):
 
 
 def load_housing_data(housing_path=HOUSING_PATH):
+    """
+    Load data from the given path
+
+    Parameters
+    ----------
+    housing_path : str
+        The local path from which the data has to be read.
+
+    Returns
+    -------
+    pandas.DataFrame
+        The loaded data as a pandas DataFrame.
+    """
     csv_path = os.path.join(housing_path, "housing.csv")
     return pd.read_csv(csv_path)
 
