@@ -3,64 +3,44 @@ import pandas as pd
 from sklearn.metrics import mean_squared_error
 
 
-def get_x_and_y_strat_test_data(strat_test_set):
+def transform_imputer(imputer, housing_num):
     """
-    Gets X and Y from stratified data
+    Transform the data using the provided imputer.
 
     Parameters
     ----------
-    strat_test_set : pandas.DataFrame
-        Dataframe after undergoing stratification
+    imputer : sklearn.impute._base.Imputer
+        The imputer instance that has been fitted on the data.
+
+    housing_num : pandas.DataFrame
+        The numerical feature set to be transformed.
 
     Returns
     -------
-    X_test : pandas.DataFrame
-        The independent part of the stratified data test
-    y_test : pandas.DataFrame
-        The dependent part of the stratified data test
+    housing_tr : pandas.DataFrame
+        The transformed numerical feature set.
     """
-    X_test = strat_test_set.drop("median_house_value", axis=1)
-    y_test = strat_test_set["median_house_value"].copy()
-    return X_test, y_test
+    X = imputer.transform(housing_num)
+    housing_tr = pd.DataFrame(X, columns=housing_num.columns, index=housing_num.index)
+    return housing_tr
 
 
-def add_additional_variables_to_X_test(X_test_prepared):
-    """
-    Creates and adds new feature to the dataframe
-
-    Parameters
-    ----------
-    X_test_prepared : pandas.DataFrame
-        Dataframe after basic processing
-
-    Returns
-    -------
-    pandas.DataFrame
-        Dataframe after adding 3 new features
-    """
-    X_test_prepared["rooms_per_household"] = (
-        X_test_prepared["total_rooms"] / X_test_prepared["households"]
-    )
-    X_test_prepared["bedrooms_per_room"] = (
-        X_test_prepared["total_bedrooms"] / X_test_prepared["total_rooms"]
-    )
-    X_test_prepared["population_per_household"] = (
-        X_test_prepared["population"] / X_test_prepared["households"]
-    )
-    return X_test_prepared
+def get_household_related_information(housing):
+    housing["rooms_per_household"] = housing["total_rooms"] / housing["households"]
+    housing["bedrooms_per_room"] = housing["total_bedrooms"] / housing["total_rooms"]
+    housing["population_per_household"] = housing["population"] / housing["households"]
+    return housing
 
 
-def perform_necessary_processing(X_test, imputer):
-    X_test_num = X_test.drop("ocean_proximity", axis=1)
-    X_test_prepared = imputer.transform(X_test_num)
-    X_test_prepared = pd.DataFrame(
-        X_test_prepared, columns=X_test_num.columns, index=X_test.index
-    )
+def prepare_data(data_set, imputer):
+    housing_num = data_set.drop("ocean_proximity", axis=1)
+    housing_data = transform_imputer(imputer, housing_num)
+    housing_data = get_household_related_information(housing_data)
 
-    X_test_prepared = add_additional_variables_to_X_test(X_test_prepared)
-    X_test_cat = X_test[["ocean_proximity"]]
-    X_test_prepared = X_test_prepared.join(pd.get_dummies(X_test_cat, drop_first=True))
-    return X_test_prepared
+    X_cat = data_set[["ocean_proximity"]]
+    X = housing_data.join(pd.get_dummies(X_cat, drop_first=True))
+    y = X[['median_house_value']]
+    return X, y
 
 
 def get_prediction(final_model, X_test_prepared, y_test):
@@ -71,9 +51,8 @@ def get_prediction(final_model, X_test_prepared, y_test):
 
 
 def scoring_main_function(strat_test_set, imputer, final_model):
-    X_test, y_test = get_x_and_y_strat_test_data(strat_test_set)
-    X_test_prepared = perform_necessary_processing(X_test, imputer)
+    X_test, y_test, imputer = prepare_data(strat_test_set, imputer)
     final_predictions, final_mse, final_rmse = get_prediction(
-        final_model, X_test_prepared, y_test
+        final_model, X_test, y_test
     )
     print(final_predictions)
