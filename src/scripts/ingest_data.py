@@ -1,15 +1,10 @@
 import argparse
 import logging
 import os
-import tarfile
 
 import config_logging
-import numpy as np
-import pandas as pd
-from six.moves import urllib
 
 from house_price_prediction.data_ingestion_package import data_ingestion
-from house_price_prediction.training_package import training
 
 DOWNLOAD_ROOT = "https://raw.githubusercontent.com/ageron/handson-ml/master/"
 HOUSING_URL = DOWNLOAD_ROOT + "datasets/housing/housing.tgz"
@@ -26,32 +21,20 @@ def initialize_logger(log_level, log_path, console_log):
 def ingest_input_data(output_folder):
     """Ingest the input data"""
     raw_data_path = output_folder + '/raw'
-    os.makedirs(raw_data_path, exist_ok=True)
-    DOWNLOAD_ROOT = "https://raw.githubusercontent.com/ageron/handson-ml/master/"
-    HOUSING_URL = DOWNLOAD_ROOT + "datasets/housing/housing.tgz"
     data_ingestion.fetch_housing_data(HOUSING_URL, raw_data_path)
     # Load the data
     housing = data_ingestion.load_housing_data(raw_data_path)
-    housing["income_cat"] = pd.cut(
-        housing["median_income"],
-        bins=[0.0, 1.5, 3.0, 4.5, 6.0, np.inf],
-        labels=[1, 2, 3, 4, 5],
-    )
     logger.info("Data Loaded Successfully")
+
     # Train and Test split the data
-    train_set, test_set, train, test = training.stratifiedShuffleSplit(housing)
-    # Pre process the data
-    housing, y_train, X_train = data_ingestion.impute_data(train)
-    X_train = training.get_household_related_information(X_train)
+    strat_train_set, strat_test_set = (
+        data_ingestion.perform_stratified_sampling_based_on_income_category(housing)
+    )
 
-    X_cat = train[["ocean_proximity"]]
-    X_train = X_train.join(pd.get_dummies(X_cat, drop_first=True))
-
-    housing, y_test, X_test = data_ingestion.impute_data(test)
-    X_test = training.get_household_related_information(X_test)
-
-    X_cat = housing[["ocean_proximity"]]
-    X_test = X_test.join(pd.get_dummies(X_cat, drop_first=True))
+    X_train, y_train, imputer = data_ingestion.prepare_data(strat_train_set, 'train')
+    X_test, y_test, imputer = data_ingestion.prepare_data(
+        strat_test_set, 'test', imputer
+    )
 
     # Save the output to the folder
     processed_data_path = os.path.join(output_folder, 'processed')
@@ -61,10 +44,10 @@ def ingest_input_data(output_folder):
     y_test_csv_path = os.path.join(processed_data_path, 'y_test.csv')
 
     os.makedirs(processed_data_path, exist_ok=True)
-    X_train = X_train.to_csv(x_train_csv_path, index=False)
-    y_train = y_train.to_csv(y_train_csv_path, index=False)
-    X_test = X_test.to_csv(x_test_csv_path, index=False)
-    y_test = y_test.to_csv(y_test_csv_path, index=False)
+    X_train.to_csv(x_train_csv_path, index=False)
+    y_train.to_csv(y_train_csv_path, index=False)
+    X_test.to_csv(x_test_csv_path, index=False)
+    y_test.to_csv(y_test_csv_path, index=False)
     logger.info("Train Test dataset split Successfully and saved")
 
 
