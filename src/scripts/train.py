@@ -4,6 +4,7 @@ import os
 import pickle
 
 import config_logging
+import mlflow
 import pandas as pd
 
 from house_price_prediction.training_package import training
@@ -27,11 +28,17 @@ def model_training(input_path, output_path):
     lin_reg_model = training.create_linear_regressor_model(housing__df_X, housing_df_y)
     with open(output_path + "/linear_regresion_model.pkl", 'wb') as f:
         pickle.dump(lin_reg_model, f)
+    mlflow.log_artifact(
+        output_path + "/linear_regresion_model.pkl", artifact_path="linear_regression"
+    )
     logger.info("Linear Regression training completed")
 
     tree_reg_model = training.create_decision_tree_model(housing__df_X, housing_df_y)
     with open(output_path + "/decision_tree_model.pkl", 'wb') as f:
         pickle.dump(tree_reg_model, f)
+    mlflow.log_artifact(
+        output_path + "/decision_tree_model.pkl", artifact_path="decision_tree"
+    )
     logger.info("Decision tree training completed")
 
     grid_search = training.create_random_forest_with_grid_search(
@@ -41,10 +48,28 @@ def model_training(input_path, output_path):
 
     with open(output_path + "/gs_cv_model.pkl", 'wb') as f:
         pickle.dump(final_model_gs, f)
+    mlflow.log_artifact(
+        output_path + "/gs_cv_model.pkl", artifact_path="grid_search_rf"
+    )
     print("Random Forest GS training completed")
 
 
-def main():
+# def main():
+#     parser = argparse.ArgumentParser()
+#     parser.add_argument("input_folder", help="Input dataset folder path")
+#     parser.add_argument("output_folder", help="Output dataset folder path")
+#     parser.add_argument("log_level", help="Log level")
+#     parser.add_argument("log_path", help="Where to log")
+#     parser.add_argument(
+#         "console_log", help="Whether or not to write logs to the console"
+#     )
+#     args = parser.parse_args()
+#     initialize_logger(args.log_level, args.log_path, args.console_log)
+#     with mlflow.start_run() as run:
+#         model_training(args.input_folder, args.output_folder)
+
+
+if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("input_folder", help="Input dataset folder path")
     parser.add_argument("output_folder", help="Output dataset folder path")
@@ -55,8 +80,5 @@ def main():
     )
     args = parser.parse_args()
     initialize_logger(args.log_level, args.log_path, args.console_log)
+    # with mlflow.start_run() as run:
     model_training(args.input_folder, args.output_folder)
-
-
-if __name__ == '__main__':
-    main()

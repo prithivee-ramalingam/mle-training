@@ -5,6 +5,7 @@ import os
 import pickle
 
 import config_logging
+import mlflow
 import pandas as pd
 
 from house_price_prediction.scoring_package import scoring
@@ -40,9 +41,28 @@ def calculate_model_score(input_data_path, model_path, output_file_path):
                 writer.writerow(["RMSE", final_rmse])
                 writer.writerow(["MAE", final_mse])
                 logger.info("Model Scores saved Successfully")
+            mlflow.log_artifact(output_file_path, file[:-4] + "_score.csv")
 
 
-def main():
+# def main():
+#     parser = argparse.ArgumentParser()
+#     parser.add_argument("input_data_path", help="Input Dataset Folder Path")
+#     parser.add_argument("model_path", help="Prediction Model FolderPath")
+#     parser.add_argument("output_file_path", help="Model Output file")
+#     parser.add_argument("log_level", help="Log level")
+#     parser.add_argument("log_path", help="Where to log")
+#     parser.add_argument(
+#         "console_log", help="Whether or not to write logs to the console"
+#     )
+#     args = parser.parse_args()
+#     initialize_logger(args.log_level, args.log_path, args.console_log)
+#     with mlflow.start_run() as run:
+#         calculate_model_score(
+#             args.input_data_path, args.model_path, args.output_file_path
+#         )
+
+
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("input_data_path", help="Input Dataset Folder Path")
     parser.add_argument("model_path", help="Prediction Model FolderPath")
@@ -54,8 +74,5 @@ def main():
     )
     args = parser.parse_args()
     initialize_logger(args.log_level, args.log_path, args.console_log)
+    # with mlflow.start_run() as run:
     calculate_model_score(args.input_data_path, args.model_path, args.output_file_path)
-
-
-if __name__ == "__main__":
-    main()
