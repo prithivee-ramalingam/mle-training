@@ -6,3 +6,4 @@ __pycache__/
 docs/build
 docs/datasets
 venv_jupyter
+.ipynb_checkpoints/
