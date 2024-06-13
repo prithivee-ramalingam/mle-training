@@ -7,3 +7,7 @@ docs/build
 docs/datasets
 venv_jupyter
 .ipynb_checkpoints/
+data
+mlruns
+artifacts
+models
