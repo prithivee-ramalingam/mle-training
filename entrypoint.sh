@@ -10,4 +10,4 @@ mlflow server \
 # Run the main Python script
 python src/scripts/main_script.py
 
-wait
+# wait

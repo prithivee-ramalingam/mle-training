@@ -46,3 +46,12 @@ ENTRYPOINT ["/app/entrypoint.sh"]
 
 # Running the container
 # sudo docker run -p 5000:5000 --name house_pred_container house_pred_image
+
+
+# To push image to dockerhub
+
+    # sudo docker login
+
+    # sudo docker tag house_pred_image prithivee7/house_price_prediction:V3
+
+    # sudo docker push prithivee7/house_price_prediction:V3
